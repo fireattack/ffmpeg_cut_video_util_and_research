@@ -1,0 +1,15 @@
+old/
+test2/
+__pycache__/
+.vscode/
+
+*.ts
+!raw.ts
+!raw-longer.ts
+
+*.json
+*.mkv
+*.mp4
+*.log
+
+temp.py
