@@ -66,7 +66,8 @@ def plot(videos, title):
             current_color = not current_color
 
     fig.suptitle(title)
-    plt.savefig(Rf'C:\files\ts_cut_bug\plot\{title}.png', pad_inches=0.1)
+    Path('plot').mkdir(exist_ok=True)
+    plt.savefig(f'plot/{title}.png', pad_inches=0.1)
 
 
 def main():

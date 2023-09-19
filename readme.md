@@ -6,5 +6,5 @@ The article is in Chinese, but feel free to ask any questions in English if you 
 
 It includes some video analysis and plot generation scripts, as well as some batch files used to generate all the test videos mentioned in the article.
 
-It also include a handy script "cut.py" which can be used to cut (stream copy) videos while avoiding issues mentioned in the very article.
+It also includes a handy script "cut.py" which can be used to cut (stream copy) videos while avoiding issues mentioned in the very article.
 
