@@ -61,11 +61,7 @@ def cut(p, inputs, flags, suffix):
             print(f'INFO: from TS to other formats, and -ss is greater than {PRECUT}s. Auto enabling double cut.')
             flags['doublecut'] = True
 
-    if flags.get('simple'):
-        pass # by default, ffmpeg copies first v/a tracks
-        # commands.extend(['-map', '0:v:0', '-map', '0:a:0'])
-
-    elif flags.get('doublecut') and not flags.get('forcenodouble'):
+    if flags.get('doublecut') and not flags.get('forcenodouble'):
         if suffix.lower() != '.ts':
             print('WARN: It is recommended to only use double cut when input is ts.')
         if parse_duration(inputs[0]).total_seconds() < PRECUT:
@@ -88,7 +84,13 @@ def cut(p, inputs, flags, suffix):
 
         temp.unlink()
         return
-        # Add some mapping, otherwise only the first v/a tracks are picked up.
+
+    # by default, ffmpeg copies first v/a tracks
+    if flags.get('simple'):
+        pass
+        # commands.extend(['-map', '0:v:0', '-map', '0:a:0'])
+
+    # Add some mapping, otherwise only the first v/a tracks are picked up.
     elif suffix.lower() == '.ts':
         # For TV recordings, there are often batch of bullshit streams like epg or subtitle streams.
         # it typically should be safe to copy if the output is also .ts
@@ -103,6 +105,9 @@ def cut(p, inputs, flags, suffix):
     else:
         # Copy all; may cause various problems with .TS. Try also flags like -ignore_unknown -copy_unknown -dn etc.
         commands.extend(['-map', '0'])
+        # avoid negative TS for mp4 to avoid edit list, for better compatibility
+        if p2.suffix.lower() == '.mp4':
+            commands.extend(['-avoid_negative_ts', 'make_zero'])
 
     commands.append(p2)
     print_and_run(commands)

@@ -83,6 +83,10 @@ def main():
     files = ['raw.mp4'] + list(Path.cwd().glob('diffss_inputseek_*.mkv'))
     plot(files, 'Various -ss when doing input seeking with fixmp4')
 
+    # for 追记 in blog post
+    files = ['raw.mp4'] + list(Path.cwd().glob('diffss_inputseek_*.mp4'))
+    plot(files, 'Various -ss when doing input seeking with fixmp4, output to mp4')
+
     files = ['raw.mp4'] + list(Path.cwd().glob('diffss_outputseek_*.mkv'))
     plot(files, 'Various -ss when doing output seeking with fixmp4')
 
@@ -103,4 +107,7 @@ def main():
 
 if __name__ == '__main__':
     # run all the batch files first.
-    main()
+    # main()
+
+    files = ['raw.mp4'] + list(Path.cwd().glob('diffss_inputseek_*.mp4'))
+    plot(files, 'Various -ss when doing input seeking with fixmp4, output to mp4')
