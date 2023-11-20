@@ -13,13 +13,16 @@ def dump_json(mydict, filename):
         json.dump(mydict, f, ensure_ascii=False, indent=2)
 
 
-def extract_packets(video_path, mode='detailed', rezero=False):
+def extract_packets(video_path, mode='detailed', rezero=False, head=None):
     command = ['ffprobe', '-show_packets', '-print_format', 'json', video_path]
     result = run(command, capture_output=True)
     data = json.loads(result.stdout)
     dump_json(data, 'temp.json')
 
-    packets = [packet for packet in data['packets']]
+    packets = data['packets']
+    if head:
+        packets = packets[:head]
+
     print(f'Extracted {len(packets)} packets from {video_path}.')
     print(f'Video packets: {len([packet for packet in packets if packet["codec_type"] == "video"])}')
     print(f'Audio packets: {len([packet for packet in packets if packet["codec_type"] == "audio"])}')
@@ -30,11 +33,11 @@ def extract_packets(video_path, mode='detailed', rezero=False):
         zero = 0
         if rezero:
             zero = min(ts_values)
+            print(f'Re-zero: {zero} is the new zero.')
         # test min too because of negative values
         max_len = max(len(f'{max(ts_values):.3f}'), len(f'{min(ts_values):.3f}'))
         fmt = f'{max_len}.3f'
 
-        print(f'Zero is set at {zero}')
         for i, p in enumerate(packets):
             pts_time = float(p.get('pts_time', 0)) - zero
             dts_time = float(p.get('dts_time', 0)) - zero
@@ -107,9 +110,10 @@ if __name__ == '__main__':
     parser.add_argument('video_path')
     parser.add_argument('--mode', choices=['detailed', 'simple', 'list'], default='detailed')
     parser.add_argument('--rezero', action='store_true')
+    parser.add_argument('--head', type=int, help='only print the first N packets')
 
     args = parser.parse_args()
     if args.command in ['start', 's']:
         show_start_time(args.video_path)
     elif args.command in ['packets', 'p']:
-        extract_packets(args.video_path, args.mode, args.rezero)
+        extract_packets(args.video_path, args.mode, args.rezero, args.head)
